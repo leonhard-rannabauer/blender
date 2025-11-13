@@ -32,6 +32,10 @@
 
 CCL_NAMESPACE_BEGIN
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 /* XML reading state */
 
 struct XMLReadState : public XMLReader {
