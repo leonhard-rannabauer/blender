@@ -127,7 +127,9 @@ ccl_device_forceinline float ray_triangle_reciprocal(const float x)
   const __m128 a = _mm_set_ss(x);
   const __m128 r = _mm_rcp_ss(a);
 
-#  ifdef __KERNEL_AVX2_
+  /* One Newton-Raphson refinement step: r' = r * (2 - r*a). */
+#  ifdef __KERNEL_AVX2__
+  /* AVX2 build supplies FMA, fold (2 - r*a) into a single fnmadd. */
   return _mm_cvtss_f32(_mm_mul_ss(r, _mm_fnmadd_ss(r, a, _mm_set_ss(2.0f))));
 #  else
   return _mm_cvtss_f32(_mm_mul_ss(r, _mm_sub_ss(_mm_set_ss(2.0f), _mm_mul_ss(r, a))));
